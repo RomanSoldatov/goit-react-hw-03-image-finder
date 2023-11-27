@@ -1,4 +1,3 @@
-import imagesAPI from 'services/getImages';
 import React, { Component } from 'react';
 import { List } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
@@ -8,6 +7,16 @@ import { InitialStateGallery } from '../InitialStateGallery/InitialStateGallery'
 import { Button } from 'components/Button/Button';
 import Modal from 'components/Modal/Modal';
 
+const BASE_URL = `https://pixabay.com/api/`;
+const API_KEY = '28194821-49041d995ecd04735d9e20d11';
+
+const getImages = (searchText, page = 1) => {
+  return fetch(
+    `${BASE_URL}?key=${API_KEY}&image_type=photo&orientation=horizontal&q=${searchText}&page=${page}&image_type=photo&orientation=horizontal&per_page=12`
+  ).then(response => {
+    return response.json();
+  });
+};
 const Status = {
   IDLE: 'idle',
   PENDING: 'pending',
@@ -45,8 +54,7 @@ export default class ImageGallery extends Component {
       if (this.state.error) {
         this.setState({ error: null });
       }
-      imagesAPI
-        .getImages(nextValue, page)
+      getImages(nextValue, page)
         .then(images => {
           this.setState(prevState => ({
             images:
